@@ -446,7 +446,7 @@ class myApp:
 
         saved = "Saved" if hash_file(self.texts[self.current_edit]['label']) == hash_text(self.texts[self.current_edit]['text'].get("1.0", tk.END)) else "Unsaved"
         size = convert_bytes(len(self.texts[self.current_edit]['text'].get("1.0", tk.END)))
-        self.root.title(f"My editor [{self.current_edit}] {saved} | {self.texts[self.current_edit]['text'].cget("state")} : {self.texts[self.current_edit]['label'] or '<'+self.texts[self.current_edit]['text'].get('1.0', '1.30')+'>' or '???'} - {size[0]:,.2f}{size[1]}")
+        self.root.title(f"My editor [{self.current_edit}] {saved} | {self.texts[self.current_edit]['text'].cget('state')} : {self.texts[self.current_edit]['label'] or '<'+self.texts[self.current_edit]['text'].get('1.0', '1.30')+'>' or '???'} - {size[0]:,.2f}{size[1]}")
 
         self.root.after(10, self.update)
 
