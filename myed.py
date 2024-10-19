@@ -12,17 +12,17 @@ from __main__ import __builtins__ as _builtins
 # Default configuration for syntax highlighter
 default_config = {
     "tags": {
-        "Notes": {
+        "notes": {
             "title": {
                 "config":{
-                    "font":["tkDefaultFont", 20]
+                    "font":["tkDefaultFont", 25, "bold"]
                 },
-                "regex":"^[\\S]+:"
+                "regex":"(\\n<.*?>|^\\n<.*?>)"
             },"section": {
                 "config":{
-                    "foreground":"magenta"
+                    "font":["tkDefaultFont", 17]
                 },
-                "regex":"#[^\\n]+"
+                "regex":"\\n%[^\\n]+"
             },
             "quotes": {
                 "config":{
@@ -34,7 +34,8 @@ default_config = {
                 "config":{
                     "foreground":"blue"
                 },
-                "regex":"\\[[^\\]]+\\]"
+                "regex":"\\[[^\\]]+\\]",
+                "on_click":"webbrowser.open(self[1:-1])"
             }
         },
         "python":{
@@ -90,7 +91,7 @@ default_config = {
         }
     },
     "line_numbers":False,
-    "defauult_syntax":"Notes"
+    "defauult_syntax":"notes"
 }
 
 home = f"C:\\Users\\{getenv('USERNAME')}" if system_name == "nt" else "~\\.config"
@@ -183,7 +184,8 @@ class myApp:
 
         self.frame.pack(fill=tk.BOTH, expand=True)
         self.immortal_label.config(text=self.texts[self.current_edit]["label"])
-        self.line_numbers.pack(side=tk.LEFT, fill=tk.Y)
+        if config["line_numbers"]:
+            self.line_numbers.pack(side=tk.LEFT, fill=tk.Y)
 
         self.info_widgets = [self.immortal_label]
 
@@ -205,11 +207,16 @@ class myApp:
         self.root.bind("<Control-Alt-s>", self.set_syntax)
         self.root.bind("<Control-Alt-r>", self.display)
         self.root.bind("<Control-r>", self.read_only)
+        def what(event):
+            global config
+            config = default_config
+            save_config()
+        self.root.bind("<Control-Alt-r>", what)
         self.root.bind("<Control-R>", self.disable_read_only)
         self.root.bind("<Control-g>", self.goto_line)
         self.update()
 
-        #self.texts[0]["text"].config(state="disabled")
+        self.texts[0]["text"].config(state="disabled")
 
     def run_code(self, _=None):
         code = self.texts[self.current_edit]["text"].get("1.0", tk.END)
